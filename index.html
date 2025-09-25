@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vendor Table Check</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f6f8fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 350px;
+      width: 100%;
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: #2b7cff;
+    }
+    input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 12px 20px;
+      width: 100%;
+      border: none;
+      background: #2b7cff;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1a5edb;
+    }
+    .message {
+      margin-top: 20px;
+      font-size: 16px;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .success {
+      background: #e0ffe0;
+      color: #0b750b;
+    }
+    .error {
+      background: #ffe0e0;
+      color: #a10000;
+    }
+    .warning {
+      background: #fff3cd;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Check Your Table</h1>
+    <input id="emailInput" type="email" placeholder="Enter your email" />
+    <button id="checkBtn">Verify Table Number</button>
+    <div id="result" class="message"></div>
+  </div>
+
+  <script>
+    // ✅ Static vendor data
+    const vendors = [
+      { name: "Monish", email: "monishmg369@gmail.com", table: "1" },
+      { name: "Gowda",  email: "monishmoni200@gmail.com", table: "2" }
+    ];
+
+    const emailInput = document.getElementById("emailInput");
+    const checkBtn = document.getElementById("checkBtn");
+    const resultDiv = document.getElementById("result");
+
+    checkBtn.addEventListener("click", () => {
+      const email = emailInput.value.trim().toLowerCase();
+      if (!email) {
+        resultDiv.textContent = "Please enter an email.";
+        resultDiv.className = "message error";
+        return;
+      }
+
+      const vendor = vendors.find(v => v.email.toLowerCase() === email);
+      if (vendor) {
+        // ✅ Check if this email has already checked in
+        if (localStorage.getItem(`checkedIn_${email}`)) {
+          resultDiv.innerHTML = `⚠️ Hello <strong>${vendor.name}</strong>, you have already checked in.<br>Your table number is <strong>${vendor.table}</strong>.`;
+          resultDiv.className = "message warning";
+        } else {
+          // First time check-in
+          localStorage.setItem(`checkedIn_${email}`, "true");
+          resultDiv.innerHTML = `✅ Hello <strong>${vendor.name}</strong>!<br>Your table number is <strong>${vendor.table}</strong>. Check-in successful.`;
+          resultDiv.className = "message success";
+        }
+      } else {
+        resultDiv.textContent = "Email not found. Please check and try again.";
+        resultDiv.className = "message error";
+      }
+    });
+  </script>
+</body>
+</html>
